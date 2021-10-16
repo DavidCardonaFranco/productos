@@ -15,8 +15,15 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 60)->unique();
+            $table->float('price', 8, 2)->default(0);
+            $table->date('expiration')->nullable();
+            $table->foreignId('user_id');
             $table->timestamps();
-        });
+            $table->foreign('user_id')->references('id')->on('users')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
+            });
     }
 
     /**
