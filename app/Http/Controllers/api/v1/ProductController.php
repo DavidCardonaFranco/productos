@@ -7,6 +7,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\api\v1\ProductStoreRequest;
 use App\Http\Requests\api\v1\ProductUpdateRequest;
+use App\Http\Resources\v1\ProductCollection;
+use App\Http\Resources\v1\ProductResource;
 
 
 class ProductController extends Controller
@@ -18,9 +20,15 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderBy('name', 'asc')->get();
+        $products = Product::orderBy('name', 'asc')->paginate();
 
-        return response()->json(['data' => $products], 200);
+        /* return response()->json(['data' => $products], 200); */
+        
+        return ProductResource::collection($products);
+
+        /* return (new ProductCollection($products))
+            ->response()
+            ->setStatusCode(200); */
     }
 
 
@@ -46,7 +54,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return response()->json(['data' => $product], 200);
+        /* return response()->json(['data' => $product], 200); */
+        return (new ProductResource($product))
+            ->response()
+            ->setStatusCode(200);
     }
 
 
